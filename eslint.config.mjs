@@ -32,6 +32,7 @@ export default tseslint.config(
           varsIgnorePattern: '^_',
         },
       ],
+      '@stylistic/padded-blocks': ['warn', 'never'],
     },
   },
 );
