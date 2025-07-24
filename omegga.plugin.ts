@@ -3,7 +3,13 @@ import fetch from 'node-fetch';
 
 
 // plugin config and storage
-type Config = {};
+type Config = {
+  notify_in_chat: boolean
+  check_interval: number
+  first_check_delay: number
+  ignored_plugins: string[]
+};
+
 type Storage = {};
 
 // plugin version here for convenience
@@ -13,7 +19,6 @@ const PLUGIN_VERSION = '0.1.0';
 type PluginUpdateInfo = GHPluginUpdateInfo | GLPluginUpdateInfo;
 
 type GHPluginUpdateInfo = {
-  _check_count?: number
   version: string
   api_type: 'github'
   repo_info: {
@@ -23,7 +28,6 @@ type GHPluginUpdateInfo = {
 };
 
 type GLPluginUpdateInfo = {
-  _check_count?: number
   version: string
   api_type: 'gitlab'
   repo_info: {
@@ -39,6 +43,13 @@ function semverIsGreater(a: string, b: string): boolean {
 function isPluginUpdateInfo(updateInfo: PluginUpdateInfo): updateInfo is PluginUpdateInfo {
   return updateInfo.api_type === 'github' || updateInfo.api_type === 'gitlab';
 }
+
+function ansiWrapper(ansi: string, string: string): string {
+  return ansi + string + '\x1b[0m';
+}
+
+// const for plugin ansi color
+const PLUGIN_ANSI = '\x1b[92m';
 
 export default class Plugin implements OmeggaPlugin<Config, Storage> {
   omegga: OL;
@@ -57,17 +68,31 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     
     this.updateCheckerCallback = this.updateCheckerCallback.bind(this);
     this.checkUpdate = this.checkUpdate.bind(this);
-    this.pluginStatusCallback = this.pluginStatusCallback.bind(this);
   }
   
   async updateCheckerCallback() {
-    Object.entries(this.plugins).forEach(([name, info]) => {
-      this.checkUpdate(name, info);
-    });
+    // perform update checks and clean up any stale hooks while at it
+    for (const [pName, uInfo] of Object.entries(this.plugins)) {
+      // check if its a stale hook and clean it up
+      const plugin = await this.omegga.getPlugin(pName);
+      if (!plugin || !plugin.loaded) {
+        delete this.plugins[pName];
+        console.warn(`Removed stale hook for ${ansiWrapper(PLUGIN_ANSI, pName)}`);
+        continue;
+      }
+      
+      // is the plugin ignored in the config?
+      if (pName in this.config.ignored_plugins) continue;
+      
+      // perform the update check
+      this.checkUpdate(pName, uInfo);
+    }
   }
   
   async checkUpdate(name: string, info: PluginUpdateInfo) {
     let response: fetch.Response | void = undefined;
+    
+    console.info(`Checking for updates to ${ansiWrapper(PLUGIN_ANSI, name)}`);
     
     // fetch the latest release from the respective platform
     if (info.api_type === 'github') {
@@ -77,7 +102,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           'X-GitHub-Api-Version': '2022-11-28',
         },
       }).catch(() => {
-        console.error(`Failed to fetch release data for \x1b[92m${name}\x1b[0m`);
+        console.warn(`Failed to fetch release data for ${ansiWrapper(PLUGIN_ANSI, name)}`);
       });
     }
     else if (info.api_type === 'gitlab') {
@@ -86,13 +111,20 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           'Content-Type': 'application/json',
         },
       }).catch(() => {
-        console.error(`Failed to fetch release data for \x1b[92m${name}\x1b[0m`);
+        console.warn(`Failed to fetch release data for ${ansiWrapper(PLUGIN_ANSI, name)}`);
       });
     }
     
     // stop if there is no response
-    if (!response) return;
+    if (!response) {
+      console.warn(`Failed to fetch release data for ${ansiWrapper(PLUGIN_ANSI, name)}`);
+      return;
+    }
     const data = await response.json();
+    if (data['status'] !== '200') {
+      console.warn(`Failed to fetch release data for ${ansiWrapper(PLUGIN_ANSI, name)}`);
+      return;
+    }
     
     // we probably shouldnt continue if its a pre-release
     if (data['prerelease']) return;
@@ -107,60 +139,53 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     if (!semverIsGreater(remoteVersion, info.version)) return;
     
     // there is a newer version available on remote, we should log it
-    this.omegga.broadcast(`[<color="#AAFFAA">${name}</>]: A new version is available: ${info.version} -> ${remoteVersion}`);
-    console.info(`A new version for \x1b[92m${name}\x1b[0m is available: ${info.version} -> ${remoteVersion}`);
+    if (this.config.notify_in_chat) {
+      this.omegga.broadcast(`<color="#AAFFAA"><code>${name}</></>: A new version is available: ${info.version} -> ${remoteVersion}`);
+    }
+    
+    console.info(`A new version for ${ansiWrapper(PLUGIN_ANSI, name)} is available: ${info.version} -> ${remoteVersion}`);
   }
   
   async pluginEvent(event: string, from: string, info?: PluginUpdateInfo) {
     // a plugin wants to be checked for updates
     if (event === 'hook') {
-      // check if the plugin has already hooked
-      if (from in this.plugins) {
-        console.log(`Plugin \x1b[92m${from}\x1b[0m has already hooked into update-checker`);
-        return;
-      }
-      
       // do some data validation to make sure plugins dont provide garbage data
       if (!info) {
-        console.error(`Plugin \x1b[92m${from}\x1b[0m did not provide update info to be hooked`);
+        console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} did not provide update info to be hooked`);
         return;
       }
       
       const semverMatch = info.version.match(/^(?:\d+)\.(?:\d+)\.(?:\d+)$/);
       if (!semverMatch) {
-        console.error(`Plugin \x1b[92m${from}\x1b[0m version isn't a valid semantic version`);
+        console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} version isn't a valid semantic version`);
         return;
       }
       
       if (!isPluginUpdateInfo(info)) {
-        console.error(`Plugin \x1b[92m${from}\x1b[0m update info doesn't match type`);
+        console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} update info doesn't match type`);
         return;
       }
       
       // all validation has passed, add plugin to record
+      console.log(from in this.plugins
+        ? `Plugin ${ansiWrapper(PLUGIN_ANSI, from)} updated its update information` 
+        : `Plugin ${ansiWrapper(PLUGIN_ANSI, from)} hooked into update-checker`,
+      );
+      
       this.plugins[from] = info;
-      console.log(`Plugin \x1b[92m${from}\x1b[0m hooked into update-checker`);
     }
     // a plugin no longer wants to be checked for updates
     else if (event === 'unhook') {
       // check if the plugin isnt hooked
       if (!(from in this.plugins)) {
-        console.log(`Plugin \x1b[92m${from}\x1b[0m isn't hooked into update-checker`);
+        console.log(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} isn't hooked into update-checker`);
         return;
       }
       
       // unhook plugin
       delete this.plugins[from];
-      console.log(`Plugin \x1b[92m${from}\x1b[0m unhooked from update-checker`);
+      console.log(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} unhooked from update-checker`);
     }
-  }
-  
-  // plugin hook clean up on plugin unload
-  async pluginStatusCallback(name: string, plugin: { name: string, isLoaded: boolean, isEnabled: boolean }) {
-    if (!(name in this.plugins) || plugin.isLoaded) return;
-    
-    delete this.plugins[name];
-    console.log(`Plugin \x1b[92m${name}\x1b[0m was unloaded and unhooked from update-checker`);
   }
   
   async init() {
@@ -174,12 +199,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     // notify other plugins that this plugin is ready to receive hooks
     this.omegga.emit('uc:ready');
     
-    // add listener for hook clean up
-    this.omegga.on('plugin:status', this.pluginStatusCallback);
-    
     // add an interval as well as trigger the callback after a delay to do a first check
-    this.interval = setInterval(this.updateCheckerCallback, 14400000); // every 4 hours: 4*60*60*1000
-    setTimeout(this.updateCheckerCallback, 1000);
+    this.interval = setInterval(this.updateCheckerCallback, this.config.check_interval * 60000); // 60*1000=60000
+    setTimeout(this.updateCheckerCallback, this.config.first_check_delay * 1000);
     
     return {};
   }

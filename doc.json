@@ -2,6 +2,28 @@
   "name": "update-checker",
   "description": "A utility plugin for plugins to hook into and easily add update notifications.",
   "author": "joksulainen",
-  "config": {},
+  "config": {
+    "notify_in_chat": {
+      "type": "boolean",
+      "description": "Whether or not to post update notifications into the in-game chat.",
+      "default": true
+    },
+    "check_interval": {
+      "type": "number",
+      "description": "The interval in minutes at which the plugin will check for updates.",
+      "default": 120
+    },
+    "first_check_delay": {
+      "type": "number",
+      "description": "The delay in seconds at which the plugin will check for updates on init.",
+      "default": 5
+    },
+    "ignored_plugins": {
+      "type": "list",
+      "itemType": "string",
+      "description": "A list of plugins that this plugin will not check updates for.",
+      "default": []
+    }
+  },
   "commands": []
 }
