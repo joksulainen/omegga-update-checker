@@ -1,0 +1,7 @@
+{
+  "name": "update-checker",
+  "description": "A utility plugin for plugins to hook into and easily add update notifications.",
+  "author": "joksulainen",
+  "config": {},
+  "commands": []
+}
