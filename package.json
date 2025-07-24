@@ -1,7 +1,7 @@
 {
   "name": "omegga-update-checker",
   "version": "0.1.0",
-  "description": "A simple plugin that logs role events.",
+  "description": "A utility omegga plugin for plugins to hook into and easily add update notifications.",
   "main": "omegga.plugin.ts",
   "scripts": {},
   "repository": {
