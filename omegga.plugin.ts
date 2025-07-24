@@ -12,8 +12,12 @@ type Config = {
 
 type Storage = {};
 
-// plugin version here for convenience
-const PLUGIN_VERSION = '0.1.0';
+// update checker info
+const UPDATE_INFO = {
+  version: '0.1.0',
+  api_type: 'github',
+  repo_info: { owner: 'joksulainen', repo: 'omegga-update-checker' },
+} as GHPluginUpdateInfo;
 
 // types to help with type safety
 type PluginUpdateInfo = GHPluginUpdateInfo | GLPluginUpdateInfo;
@@ -188,11 +192,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   
   async init() {
     // add this plugins update info
-    this.plugins['update-checker'] = {
-      version: PLUGIN_VERSION,
-      api_type: 'github',
-      repo_info: { owner: 'joksulainen', repo: 'omegga-update-checker' },
-    };
+    this.plugins['update-checker'] = UPDATE_INFO;
     
     // notify other plugins that this plugin is ready to receive hooks
     // ... if it could be done
