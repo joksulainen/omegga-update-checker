@@ -31,13 +31,13 @@ Example implementation below and in my [this plugin](https://github.com/joksulai
 
 ```typescript
 const updateInfo = {
-    version: '1.2.3'                    // a semantic version
-    api_type: 'github'                  // 'github' or 'gitlab' depending on where your plugin repo is
+    version: '1.2.3',                   // a semantic version
+    api_type: 'github',                 // 'github' or 'gitlab' depending on where your plugin repo is
     repo_info: {
         owner: 'joksulainen',           // used only if api type is github
         repo: 'omegga-update-checker',  // used only if api type is github
         project_id: '12345',            // used only if api type is gitlab
-    }
+    },
 };
 
 async init() {
@@ -46,15 +46,11 @@ async init() {
     // if this plugin is loaded after the update-checker plugin then there should be additional logic to check for its existence
     const ucPlugin = this.omegga.getPlugin('update-checker');
     if (ucPlugin) {
-        ucPlugin.emitPlugin('hook', updateInfo);
+        ucPlugin.emitPlugin('hook', [updateInfo]);
     }
     
     // listen to this event to know when the plugin is ready
-    this.omegga.on('uc:ready', () => {
-        // get the plugin and hook it with the update information so that it knows where to check for updates
-        const ucPlugin = await this.omegga.getPlugin('update-checker');
-        ucPlugin.emitPlugin('hook', updateInfo);
-    });
+    // what event? its not possible (sadly)
 }
 
 // please clean up your hooks so the plugin doesnt have to when it performs the checks
@@ -63,6 +59,6 @@ async stop() {
     
     // get the plugin and emit unhook
     const ucPlugin = await this.omegga.getPlugin('update-checker');
-    ucPlugin.emitPlugin('unhook');
+    ucPlugin.emitPlugin('unhook', []);
 }
 ```

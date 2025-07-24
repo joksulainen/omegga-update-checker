@@ -116,15 +116,11 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     }
     
     // stop if there is no response
-    if (!response) {
+    if (!response || !response.ok) {
       console.warn(`Failed to fetch release data for ${ansiWrapper(PLUGIN_ANSI, name)}`);
       return;
     }
     const data = await response.json();
-    if (data['status'] !== '200') {
-      console.warn(`Failed to fetch release data for ${ansiWrapper(PLUGIN_ANSI, name)}`);
-      return;
-    }
     
     // we probably shouldnt continue if its a pre-release
     if (data['prerelease']) return;
@@ -140,29 +136,31 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     
     // there is a newer version available on remote, we should log it
     if (this.config.notify_in_chat) {
-      this.omegga.broadcast(`<color="#AAFFAA"><code>${name}</></>: A new version is available: ${info.version} -> ${remoteVersion}`);
+      this.omegga.broadcast(`<code><color="#AAFFAA">${name}</></>: A new version is available: ${info.version} -> ${remoteVersion}`);
     }
     
     console.info(`A new version for ${ansiWrapper(PLUGIN_ANSI, name)} is available: ${info.version} -> ${remoteVersion}`);
   }
   
-  async pluginEvent(event: string, from: string, info?: PluginUpdateInfo) {
+  async pluginEvent(event: string, from: string, args: any[]) {
     // a plugin wants to be checked for updates
     if (event === 'hook') {
       // do some data validation to make sure plugins dont provide garbage data
-      if (!info) {
+      if (!args[0]) {
         console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} did not provide update info to be hooked`);
+        return;
+      }
+      
+      const info = args[0];
+      
+      if (!isPluginUpdateInfo(info)) {
+        console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} update info doesn't match type`);
         return;
       }
       
       const semverMatch = info.version.match(/^(?:\d+)\.(?:\d+)\.(?:\d+)$/);
       if (!semverMatch) {
         console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} version isn't a valid semantic version`);
-        return;
-      }
-      
-      if (!isPluginUpdateInfo(info)) {
-        console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} update info doesn't match type`);
         return;
       }
       
@@ -197,7 +195,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     };
     
     // notify other plugins that this plugin is ready to receive hooks
-    this.omegga.emit('uc:ready');
+    // ... if it could be done
     
     // add an interval as well as trigger the callback after a delay to do a first check
     this.interval = setInterval(this.updateCheckerCallback, this.config.check_interval * 60000); // 60*1000=60000
