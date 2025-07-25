@@ -151,7 +151,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       this.omegga.broadcast(`<code><color="#AAFFAA">${name}</></>: A new version is available: ${info.version} -> ${remoteVersion}`);
     }
     
-    console.info(`A new version for ${ansiWrapper(PLUGIN_ANSI, name)} is available: ${info.version} -> ${remoteVersion}`);
+    console.info(`A new version of ${ansiWrapper(PLUGIN_ANSI, name)} is available: ${info.version} -> ${remoteVersion}`);
   }
   
   async pluginEvent(event: string, from: string, args: any[]) {
