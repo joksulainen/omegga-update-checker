@@ -158,7 +158,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     // a plugin wants to be checked for updates
     if (event === 'hook') {
       // do some data validation to make sure plugins dont provide garbage data
-      if (!args[0]) {
+      if (!args.length) {
         console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} did not provide update info to be hooked`);
         return;
       }
