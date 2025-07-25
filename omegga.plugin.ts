@@ -127,16 +127,24 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     const data = await response.json();
     
     // we probably shouldnt continue if its a pre-release
-    if (data['prerelease']) return;
+    if (data['prerelease'] || data['upcoming_release']) {
+      console.info(`No updates available for ${ansiWrapper(PLUGIN_ANSI, name)}`);
+      return;
+    }
     
-    // see if the tag name contains a semver and grab it, otherwise end early
-    const remoteVersionMatch = ((data['tag_name'] as string).match(/^.*((?:\d+)\.(?:\d+)\.(?:\d+)).*$/));
-    if (!remoteVersionMatch) return;
+    // see if the tag name contains a stable semver and grab it, otherwise end early
+    const remoteVersionMatch = ((data['tag_name'] as string).match(/^.*((?:\d+)\.(?:\d+)\.(?:\d+))$/));
+    if (!remoteVersionMatch) {
+      console.info(`No updates available for ${ansiWrapper(PLUGIN_ANSI, name)}`);
+      return;
+    }
     const remoteVersion = remoteVersionMatch[1];
     
-    // proceed if remoteVersion is a string and is a greater semver than info.version
-    if (typeof remoteVersion !== 'string') return;
-    if (!semverIsGreater(remoteVersion, info.version)) return;
+    // proceed if remoteVersion is a greater semver than info.version
+    if (!semverIsGreater(remoteVersion, info.version)) {
+      console.info(`No updates available for ${ansiWrapper(PLUGIN_ANSI, name)}`);
+      return;
+    }
     
     // there is a newer version available on remote, we should log it
     if (this.config.notify_in_chat) {
