@@ -32,7 +32,7 @@ Example implementation below and in my [this plugin](https://github.com/joksulai
 ```typescript
 const updateInfo = {
     version: '1.2.3',                   // a semantic version
-    api_type: 'github',                 // 'github' or 'gitlab' depending on where your plugin repo is
+    api_type: 'github',                 // 'github' or 'gitlab'
     repo_info: {
         owner: 'joksulainen',           // used only if api type is github
         repo: 'omegga-update-checker',  // used only if api type is github
@@ -43,7 +43,8 @@ const updateInfo = {
 async init() {
     // other code
     
-    // if this plugin is loaded after the update-checker plugin then there should be additional logic to check for its existence
+    // if this plugin is loaded after the update-checker plugin then there should
+    // be additional logic to check for its existence
     const ucPlugin = this.omegga.getPlugin('update-checker');
     if (ucPlugin) {
         ucPlugin.emitPlugin('hook', [updateInfo]);
