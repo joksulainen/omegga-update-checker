@@ -29,7 +29,7 @@ Updates are based on releases and their tag names in the plugin repository.
 
 Simply add a `uc-info.json` file into your plugin directory and provide the following information.
 
-```json
+```jsonc
 {
     "version": "1.2.3",                   // a semantic version
     "api_type": "github",                 // 'github' or 'gitlab'
