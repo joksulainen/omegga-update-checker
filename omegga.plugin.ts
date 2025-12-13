@@ -1,5 +1,6 @@
 import { OmeggaPlugin, OL, PS, PC } from 'omegga';
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
+import fs from 'node:fs';
 
 
 // plugin config and storage
@@ -11,13 +12,6 @@ type Config = {
 };
 
 type Storage = {};
-
-// update checker info
-const UPDATE_INFO = {
-  version: '0.1.0',
-  api_type: 'github',
-  repo_info: { owner: 'joksulainen', repo: 'omegga-update-checker' },
-} as GHPluginUpdateInfo;
 
 // types to help with type safety
 type PluginUpdateInfo = GHPluginUpdateInfo | GLPluginUpdateInfo;
@@ -94,7 +88,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   }
   
   async checkUpdate(name: string, info: PluginUpdateInfo) {
-    let response: fetch.Response | void = undefined;
+    let response: Response | void = undefined;
     
     console.info(`Checking for updates to ${ansiWrapper(PLUGIN_ANSI, name)}`);
     
@@ -154,57 +148,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     console.info(`A new version of ${ansiWrapper(PLUGIN_ANSI, name)} is available: ${info.version} -> ${remoteVersion}`);
   }
   
-  async pluginEvent(event: string, from: string, args: any[]) {
-    // a plugin wants to be checked for updates
-    if (event === 'hook') {
-      // do some data validation to make sure plugins dont provide garbage data
-      if (!args.length) {
-        console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} did not provide update info to be hooked`);
-        return;
-      }
-      
-      const info = args[0];
-      
-      if (!isPluginUpdateInfo(info)) {
-        console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} update info doesn't match type`);
-        return;
-      }
-      
-      const semverMatch = info.version.match(/^(?:\d+)\.(?:\d+)\.(?:\d+)$/);
-      if (!semverMatch) {
-        console.error(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} version isn't a valid semantic version`);
-        return;
-      }
-      
-      // all validation has passed, add plugin to record
-      console.log(from in this.plugins
-        ? `Plugin ${ansiWrapper(PLUGIN_ANSI, from)} updated its update information` 
-        : `Plugin ${ansiWrapper(PLUGIN_ANSI, from)} hooked into update-checker`,
-      );
-      
-      this.plugins[from] = info;
-    }
-    // a plugin no longer wants to be checked for updates
-    else if (event === 'unhook') {
-      // check if the plugin isnt hooked
-      if (!(from in this.plugins)) {
-        console.log(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} isn't hooked into update-checker`);
-        return;
-      }
-      
-      // unhook plugin
-      delete this.plugins[from];
-      console.log(`Plugin ${ansiWrapper(PLUGIN_ANSI, from)} unhooked from update-checker`);
-    }
-  }
-  
   async init() {
-    // add this plugins update info
-    this.plugins['update-checker'] = UPDATE_INFO;
-    
-    // notify other plugins that this plugin is ready to receive hooks
-    // ... if it could be done
-    
     // add an interval as well as trigger the callback after a delay to do a first check
     this.interval = setInterval(this.updateCheckerCallback, this.config.check_interval * 60000); // 60*1000=60000
     setTimeout(this.updateCheckerCallback, this.config.first_check_delay * 1000);

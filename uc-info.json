@@ -1,0 +1,8 @@
+{
+    "version": "0.1.0",
+    "api_type": "github",
+    "repo_info": {
+        "owner": "joksulainen",
+        "repo": "omegga-update-checker"
+    }
+}

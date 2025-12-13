@@ -1,1 +1,1 @@
-["http", "https", "zlib", "stream", "buffer", "util", "url"]
+["http", "https", "zlib", "stream", "buffer", "util", "url", "fs"]

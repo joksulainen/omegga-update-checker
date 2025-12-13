@@ -1,6 +1,6 @@
 {
   "name": "update-checker",
-  "description": "A utility plugin for plugins to hook into and easily add update notifications.",
+  "description": "A utility plugin for plugins to easily add update notifications.",
   "author": "joksulainen",
   "config": {
     "notify_in_chat": {
@@ -15,7 +15,7 @@
     },
     "first_check_delay": {
       "type": "number",
-      "description": "The delay in seconds at which the plugin will check for updates on init.",
+      "description": "The delay in seconds after which the plugin will check for updates on init.",
       "default": 5
     },
     "ignored_plugins": {
