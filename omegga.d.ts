@@ -1592,6 +1592,18 @@ export interface OmeggaPlayer {
 	 * @param minigameIndex minigame index
 	 */
 	getScore(minigameIndex: number): Promise<number>;
+	/**
+	 * Set leaderboard value
+	 * @param key leaderboard key (Score, Kills, Deaths, CorrectGuesses)
+	 * @param value leaderboard value
+	 */
+	setLeaderboard(key: string, value: number): void;
+	/**
+	 * Get leaderboard value
+	 * @param key leaderboard key (Score, Kills, Deaths, CorrectGuesses)
+	 * @return leaderboard value
+	 */
+	getLeaderboard(key: string): Promise<number | null>;
 }
 export interface StaticPlayer {
 	/**
@@ -1671,6 +1683,22 @@ export interface StaticPlayer {
 	 * @param minigameIndex minigame index
 	 */
 	getScore(omegga: OmeggaLike, target: string | OmeggaPlayer, minigameIndex: number): Promise<number>;
+	/**
+	 * Set leaderboard value
+	 * @param omegga Omegga instance
+	 * @param target Player or player name/id
+	 * @param key leaderboard key (Score, Kills, Deaths, CorrectGuesses)
+	 * @param value leaderboard value
+	 */
+	setLeaderboard(omegga: OmeggaLike, target: string | OmeggaPlayer, key: string, value: number): void;
+	/**
+	 * Get leaderboard value
+	 * @param omegga Omegga instance
+	 * @param target Player or player name/id
+	 * @param key leaderboard key (Score, Kills, Deaths, CorrectGuesses)
+	 * @return leaderboard value
+	 */
+	getLeaderboard(omegga: OmeggaLike, target: string | OmeggaPlayer, key: string): Promise<number | null>;
 }
 export interface InjectedCommands {
 	/** Get server status */
@@ -1750,6 +1778,8 @@ export interface OmeggaLike extends OmeggaCore, LogWrangling, InjectedCommands, 
 	worldPath: string;
 	/** path to presets */
 	presetPath: string;
+	/** path to containing dir */
+	path: string;
 	/** get a plugin's name, documentation, and loaded status
 	 * If run in an unsafe plugin, the emitPlugin method sends events from
 	 * an "unsafe" plugin
