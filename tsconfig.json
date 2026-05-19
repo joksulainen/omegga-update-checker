@@ -5,6 +5,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "es2020",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "types": ["node"]
   }
 }
