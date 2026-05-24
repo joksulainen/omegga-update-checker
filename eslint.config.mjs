@@ -24,7 +24,7 @@ export default tseslint.config(
       '@stylistic/semi': ['error', 'always'],
       '@stylistic/no-trailing-spaces': 'off',
       '@stylistic/no-multiple-empty-lines': 'off',
-      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+      '@typescript-eslint/consistent-type-definitions': ['off', 'type'],
       'no-unused-vars': [
         'warn',
         {
@@ -33,6 +33,19 @@ export default tseslint.config(
         },
       ],
       '@stylistic/padded-blocks': ['warn', 'never'],
+      '@stylistic/member-delimiter-style': [
+        'error',
+        {
+          multiline: {
+            delimiter: 'comma',
+            requireLast: true,
+          },
+          singleline: {
+            delimiter: 'comma',
+            requireLast: false,
+          },
+        },
+      ],
     },
   },
 );
