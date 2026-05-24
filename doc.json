@@ -5,7 +5,7 @@
   "config": {
     "notify_in_chat": {
       "type": "boolean",
-      "description": "Whether or not to post update notifications into the in-game chat.",
+      "description": "Whether or not to post update notifications into the in-game chat. This is a short blurb if at least one plugin has an update.",
       "default": true
     },
     "check_interval": {
