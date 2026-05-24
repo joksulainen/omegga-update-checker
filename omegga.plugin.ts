@@ -108,10 +108,11 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     // populate providers map with update providers from the designated directory
     const providerModules = fs.readdirSync('./plugins/update-checker/update_providers');
     for (const module of providerModules) {
-      console.log(`Loading provider ${module.substring(0, module.length - 3)}`);
-      const mod = require(`./update_providers/${module.substring(0, module.length - 3)}`);
+      const modStr = module.substring(0, module.length - 3);
+      console.log(`Loading provider ${modStr}`);
+      const mod = require(`./update_providers/${modStr}`);
       this.providers[mod.default.id] = mod.default;
-      console.log(mod.default);
+      console.log(`Loaded provider ${modStr}`);
     }
     
     return {};
