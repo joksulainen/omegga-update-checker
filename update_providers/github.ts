@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 import semver from 'semver';
 
-import { PLUGIN_ANSI, ansiWrapper } from 'common';
-import { defineProvider, PluginUpdateInfo } from 'update_provider';
+import { PLUGIN_ANSI, ansiWrapper } from '../common';
+import { defineProvider, PluginUpdateInfo, PluginUpdate } from '../update_provider';
 
 
 export interface GHPluginUpdateInfo extends PluginUpdateInfo {
@@ -31,16 +31,7 @@ export default defineProvider<GHPluginUpdateInfo>({
     return this.isProviderType(uInfo) && semver.valid(uInfo.version) !== null;
   },
   
-  async checkUpdate(name: string, uInfo: GHPluginUpdateInfo): Promise<string | null> {
-    if (!this.isProviderType(uInfo)) {
-      console.warn(`Update info for ${ansiWrapper(PLUGIN_ANSI, name)} is malformed`);
-      throw new Error(`Update info for ${name} is malformed`);
-    }
-    if (!semver.valid(uInfo.version)) {
-      console.warn(`Invalid local version for ${ansiWrapper(PLUGIN_ANSI, name)}: ${uInfo.version}`);
-      throw new Error(`Invalid local version for ${name}: ${uInfo.version}`);
-    }
-    
+  async checkUpdate(name: string, uInfo: GHPluginUpdateInfo): Promise<PluginUpdate | null> {
     const response = await fetch(`https://api.github.com/repos/${uInfo.repo_info.owner}/${uInfo.repo_info.repo}/releases/latest`, {
       headers: { 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2026-03-10' },
     }).catch((e) => {
@@ -61,6 +52,6 @@ export default defineProvider<GHPluginUpdateInfo>({
       throw new Error(`Invalid remote version tag for ${name}: ${data.tag_name}`);
     }
     
-    return semver.gt(remoteVersion, uInfo.version) ? remoteVersion : null;
+    return semver.gt(remoteVersion, uInfo.version) ? { local_ver: uInfo.version, remote_ver: remoteVersion } : null;
   },
 });

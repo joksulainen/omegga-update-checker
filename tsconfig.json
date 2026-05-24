@@ -2,10 +2,13 @@
   "compilerOptions": {
     "noEmit": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
     "target": "es2020",
-    "baseUrl": ".",
-    "types": ["node"]
+    "types": ["node"],
+    "module": "nodenext",
+    "paths": {
+      
+    }
   }
 }
