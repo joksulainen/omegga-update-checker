@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 
-import { OmeggaPlugin, OL, PS, PC } from './omegga';
-import { PLUGIN_ANSI, ansiWrapper } from './common';
-import { UpdateProvider, PluginUpdateInfo } from './update_provider';
+import { OmeggaPlugin, OL, PS, PC } from '@/omegga';
+import { PLUGIN_ANSI, ansiWrapper } from '@/common';
+import { UpdateProvider, PluginUpdateInfo } from '@/update_provider';
 
 
 // plugin config and storage
