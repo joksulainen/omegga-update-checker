@@ -111,6 +111,12 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       const modStr = module.substring(0, module.length - 3);
       console.log(`Loading provider ${modStr}`);
       const mod = require(`./update_providers/${modStr}`);
+      
+      if (mod.default.id in this.providers) { // we dont want duplicates
+        console.warn(`Skipping ${modStr}: there is already another loaded provider using the id ${mod.default.id}`);
+        continue;
+      }
+      
       this.providers[mod.default.id] = mod.default;
       console.log(`Loaded provider ${modStr}`);
     }
