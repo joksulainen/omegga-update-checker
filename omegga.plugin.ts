@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
 import { OmeggaPlugin, OL, PS, PC } from '@/omegga';
-import { PLUGIN_ANSI, ansiWrapper } from '@/common';
+import { PLUGIN_ANSI, ansiWrapper, PLUGIN_FOLDER } from '@/common';
 import { UpdateProvider, PluginUpdateInfo } from '@/update_provider';
 
 
@@ -43,7 +43,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   
   async updateCheckerCallback() {
     // get all plugins in the plugins directory
-    const plugins = fs.readdirSync('./plugins/');
+    const plugins = fs.readdirSync(PLUGIN_FOLDER + '/');
     const promises = Array<Promise<UpdatePromiseReturn | undefined>>();
     
     // perform update checks and clean up any stale hooks while at it
@@ -52,9 +52,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       if (this.config.ignored_plugins.includes(plugin)) continue;
       
       // check if the plugin has a uc-info.json file and load it, otherwise the plugin does not use this plugin
-      if (!fs.existsSync(`./plugins/${plugin}/uc-info.json`)) continue;
+      if (!fs.existsSync(`${PLUGIN_FOLDER}/${plugin}/uc-info.json`)) continue;
       
-      const uInfo = JSON.parse(fs.readFileSync(`./plugins/${plugin}/uc-info.json`, 'utf-8').toString());
+      const uInfo = JSON.parse(fs.readFileSync(`${PLUGIN_FOLDER}/${plugin}/uc-info.json`, 'utf-8').toString());
       if (!(uInfo.api_type in this.providers)) { // check if there is a corresponding provider
         console.warn(`${ansiWrapper(PLUGIN_ANSI, plugin)} specified provider (${uInfo.api_type}) isn't loaded, skipping`);
         continue;
@@ -106,7 +106,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     setTimeout(this.updateCheckerCallback, this.config.first_check_delay * 1000);
     
     // populate providers map with update providers from the designated directory
-    const providerModules = fs.readdirSync('./plugins/update-checker/update_providers');
+    const providerModules = fs.readdirSync(`${PLUGIN_FOLDER}update-checker/update_providers`);
     for (const module of providerModules) {
       const modStr = module.substring(0, module.length - 3);
       console.log(`Loading provider ${modStr}`);
