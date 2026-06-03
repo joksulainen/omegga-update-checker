@@ -6,9 +6,6 @@
     "resolveJsonModule": true,
     "target": "es2020",
     "types": ["node"],
-    "module": "nodenext",
-    "paths": {
-      "@/*": ["./*"]
-    }
+    "module": "nodenext"
   }
 }

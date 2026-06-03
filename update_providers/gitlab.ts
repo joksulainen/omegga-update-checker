@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 import semver from 'semver';
 
-import { PLUGIN_ANSI, ansiWrapper } from '@/common';
-import { defineProvider, PluginUpdateInfo, PluginUpdate } from '@/update_provider';
+import { PLUGIN_ANSI, ansiWrapper } from '../common';
+import { defineProvider, PluginUpdateInfo, PluginUpdate } from '../update_provider';
 
 
 export interface GLPluginUpdateInfo extends PluginUpdateInfo {

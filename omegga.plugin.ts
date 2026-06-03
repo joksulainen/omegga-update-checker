@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 
-import { OmeggaPlugin, OL, PS, PC } from '@/omegga';
-import { PLUGIN_ANSI, ansiWrapper, PLUGIN_FOLDER } from '@/common';
-import { UpdateProvider, PluginUpdateInfo } from '@/update_provider';
+import { OmeggaPlugin, OL, PS, PC } from './omegga';
+import { PLUGIN_ANSI, ansiWrapper, PLUGIN_FOLDER } from './common';
+import { UpdateProvider, PluginUpdateInfo } from './update_provider';
 
 
 // plugin config and storage
@@ -106,7 +106,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     setTimeout(this.updateCheckerCallback, this.config.first_check_delay * 1000);
     
     // populate providers map with update providers from the designated directory
-    const providerModules = fs.readdirSync(`${PLUGIN_FOLDER}update-checker/update_providers`);
+    const providerModules = fs.readdirSync(`${PLUGIN_FOLDER}/update-checker/update_providers`);
     for (const module of providerModules) {
       const modStr = module.substring(0, module.length - 3);
       console.log(`Loading provider ${modStr}`);
