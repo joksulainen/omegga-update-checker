@@ -109,6 +109,315 @@ export type EnvironmentPreset = Preset<"Environment", {
 		};
 	};
 }>;
+declare class ConsoleCommand {
+	private readonly versions;
+	/** @param versions [sinceVersion, name] pairs in ascending version order */
+	constructor(versions: readonly [
+		number,
+		string
+	][]);
+	/** Resolve the command name for a given game CL version. */
+	resolve(version: number): string;
+	/** every name this command has gone by, across versions */
+	get names(): readonly string[];
+}
+declare const COMMAND_TABLE: {
+	Bricks: {
+		ActuallyReduce: ConsoleCommand;
+		Clear: ConsoleCommand;
+		ClearAll: ConsoleCommand;
+		ClearRegion: ConsoleCommand;
+		Cluster: {
+			EnableMergingDynamicGrids: ConsoleCommand;
+			EnableMergingGlobalGrid: ConsoleCommand;
+			MaxClusterHalfExtent: ConsoleCommand;
+			MaxClusterWeight: ConsoleCommand;
+			MaxSplitWeight: ConsoleCommand;
+			MinCollapseWeight: ConsoleCommand;
+			MinMergeThreshold: ConsoleCommand;
+			MinRootHalfExtent: ConsoleCommand;
+		};
+		ClusterMesh: {
+			CardCaching: ConsoleCommand;
+			DrawDistance: ConsoleCommand;
+			Hysteresis: ConsoleCommand;
+			Lod0KeepBias: ConsoleCommand;
+			MaxTransitionsPerFrame: ConsoleCommand;
+			MemoryBudgetBucketSize: ConsoleCommand;
+			MemoryBudgetMB: ConsoleCommand;
+			Residency: ConsoleCommand;
+			ResidencyConeHysteresis: ConsoleCommand;
+			ResidencyConeMargin: ConsoleCommand;
+			ResidencyWideFOV: ConsoleCommand;
+			ResidencyZoomHysteresisKillRate: ConsoleCommand;
+		};
+		DebugSaveFileScreenshots: ConsoleCommand;
+		DisableLoadWiresForLegacySave: ConsoleCommand;
+		DrawDebugOctree: ConsoleCommand;
+		DumpChunkStats: ConsoleCommand;
+		DumpCoverageStats: ConsoleCommand;
+		DumpGeometryStats: ConsoleCommand;
+		DumpGroupStats: ConsoleCommand;
+		EnableExtendedSort: ConsoleCommand;
+		EnableLumenCards: ConsoleCommand;
+		ExportModel: ConsoleCommand;
+		GenerateGates: ConsoleCommand;
+		GenerateMathTables: ConsoleCommand;
+		GetOctreeStats: ConsoleCommand;
+		Load: ConsoleCommand;
+		LoadTemplate: ConsoleCommand;
+		LODScreenSizeScale: ConsoleCommand;
+		LogClusterBuildTime: ConsoleCommand;
+		LogStreamSizes: ConsoleCommand;
+		MaxChunkClusterEntriesPerTick: ConsoleCommand;
+		MaxChunkEntries: ConsoleCommand;
+		MaxChunkUpdatesPerTick: ConsoleCommand;
+		MaxChunkUpdateTimePerTick: ConsoleCommand;
+		MaxClusterResultsToApplyPerTick: ConsoleCommand;
+		MaxSubscribed: ConsoleCommand;
+		OptimizeVertexCache: ConsoleCommand;
+		PrintOctreeLeafStats: ConsoleCommand;
+		RebuildClusters: ConsoleCommand;
+		RebuildMeshes: ConsoleCommand;
+		Save: ConsoleCommand;
+		SaveFileCompressionLevel: ConsoleCommand;
+		SaveFileReadBrickLimit: ConsoleCommand;
+		SaveFileReadComponentInstanceLimit: ConsoleCommand;
+		SaveFileReadComponentTypeLimit: ConsoleCommand;
+		SaveFileReadDimensionLimit: ConsoleCommand;
+		SaveFileReadOwnerLimit: ConsoleCommand;
+		SaveFileReadSizeLimit: ConsoleCommand;
+		SaveRegion: ConsoleCommand;
+		ValidateMathTables: ConsoleCommand;
+		Vehicle: {
+			AntiRollScale: ConsoleCommand;
+			ClientFullSim: ConsoleCommand;
+			DebugDraw: ConsoleCommand;
+		};
+		WheelEngine: {
+			VisualiseTurningCircles: ConsoleCommand;
+		};
+		WipeMirrorTables: ConsoleCommand;
+	};
+	BundleCompressionLevel: ConsoleCommand;
+	Bundles: {
+		AutoCloseDelay: ConsoleCommand;
+	};
+	Catalog: {
+		ClearCache: ConsoleCommand;
+		HideBlacklisted: ConsoleCommand;
+	};
+	Chat: {
+		Broadcast: ConsoleCommand;
+		Command: ConsoleCommand;
+		MessageForUnknownCommands: ConsoleCommand;
+		StatusMessage: ConsoleCommand;
+		Whisper: ConsoleCommand;
+	};
+	ComplexityWarning: {
+		BrickCount: ConsoleCommand;
+		FrozenEntityCount: ConsoleCommand;
+		UnfrozenEntityCount: ConsoleCommand;
+	};
+	Debug: {
+		CauseEnsure: ConsoleCommand;
+		CauseHang: ConsoleCommand;
+		ChangeBundleOwner: ConsoleCommand;
+		Crash: ConsoleCommand;
+		ListBundleOwners: ConsoleCommand;
+		TestMarkdown: ConsoleCommand;
+		TestMarkup: ConsoleCommand;
+	};
+	DrawDebug: {
+		BrickClusters: {
+			$: ConsoleCommand;
+			Neighbors: ConsoleCommand;
+			OctreeBounds: ConsoleCommand;
+		};
+		BrickClusterSplitTree: ConsoleCommand;
+		BrickLumenCards: ConsoleCommand;
+		ClientUpdates: ConsoleCommand;
+		Colliders: {
+			$: ConsoleCommand;
+			DrawCOM: ConsoleCommand;
+			DrawCustomMass: ConsoleCommand;
+		};
+		Constraints: ConsoleCommand;
+		Entities: {
+			$: ConsoleCommand;
+			Boxes: ConsoleCommand;
+			Dots: ConsoleCommand;
+		};
+		Lights: {
+			$: ConsoleCommand;
+			RedThreshold: ConsoleCommand;
+		};
+		Texts: ConsoleCommand;
+	};
+	EnableImgui: ConsoleCommand;
+	EOS: {
+		AttemptLogin: ConsoleCommand;
+		Disable: ConsoleCommand;
+		SetSocketName: ConsoleCommand;
+	};
+	GPUMappedArray: {
+		MinBlocks: ConsoleCommand;
+		ReservedHeadroomBlocks: ConsoleCommand;
+	};
+	Inspector: {
+		ShowFloatTest: ConsoleCommand;
+		ShowGraphics: ConsoleCommand;
+	};
+	Interview: ConsoleCommand;
+	Iris: {
+		EnableMapDeltaSerialization: ConsoleCommand;
+	};
+	LagIndicator: {
+		MinLatency: ConsoleCommand;
+		MinTimeSincePacket: ConsoleCommand;
+	};
+	Lua: {
+		Execute: ConsoleCommand;
+		ExecuteScript: ConsoleCommand;
+	};
+	Msgpack: {
+		Default: {
+			MaxContainerSize: ConsoleCommand;
+			MaxDepth: ConsoleCommand;
+			MaxEnumValueCount: ConsoleCommand;
+			MaxFieldCount: ConsoleCommand;
+			MaxFieldNameLength: ConsoleCommand;
+			MaxFlatArraySize: ConsoleCommand;
+			MaxNameLength: ConsoleCommand;
+			MaxStringLength: ConsoleCommand;
+			MaxTypeCount: ConsoleCommand;
+		};
+	};
+	NudgePhysicsObject: ConsoleCommand;
+	Permissions: {
+		GrantRole: ConsoleCommand;
+		RevokeRole: ConsoleCommand;
+		Save: ConsoleCommand;
+	};
+	Physics: {
+		ForceFreezeDynamicGrids: ConsoleCommand;
+	};
+	Placer: {
+		LogRowTests: ConsoleCommand;
+	};
+	PlayerParts: {
+		UseFastRender: ConsoleCommand;
+	};
+	Resizer: {
+		LogTests: ConsoleCommand;
+	};
+	RunHardwareBenchmark: ConsoleCommand;
+	Server: {
+		Environment: {
+			LoadPreset: ConsoleCommand;
+			Reset: ConsoleCommand;
+			SavePreset: ConsoleCommand;
+		};
+		GameMode: {
+			EndRound: ConsoleCommand;
+			NextRound: ConsoleCommand;
+			PrintLeaderboard: ConsoleCommand;
+			Reset: ConsoleCommand;
+		};
+		Minigames: {
+			Delete: ConsoleCommand;
+			List: ConsoleCommand;
+			LoadPreset: ConsoleCommand;
+			NextRound: ConsoleCommand;
+			Reset: ConsoleCommand;
+			SavePreset: ConsoleCommand;
+		};
+		PlayerPositions: ConsoleCommand;
+		Players: {
+			Damage: ConsoleCommand;
+			GiveItem: ConsoleCommand;
+			Kill: ConsoleCommand;
+			PrintAllLeaderboardValues: ConsoleCommand;
+			PrintLeaderboardValue: ConsoleCommand;
+			RemoveItem: ConsoleCommand;
+			SetLeaderboardValue: ConsoleCommand;
+			SetMinigame: ConsoleCommand;
+			SetTeam: ConsoleCommand;
+		};
+		Status: ConsoleCommand;
+		Teams: {
+			PrintAllLeaderboardValues: ConsoleCommand;
+			PrintLeaderboardValue: ConsoleCommand;
+		};
+	};
+	Text: {
+		FlushRecoveryFrames: ConsoleCommand;
+		MaxCharsPolledPerFrame: ConsoleCommand;
+		MaxCharsShapedPerFrame: ConsoleCommand;
+	};
+	Thumbnails: {
+		WipeCache: ConsoleCommand;
+	};
+	Voice: {
+		DebugDecode: ConsoleCommand;
+		SyntheticInput: ConsoleCommand;
+		TestJitter: ConsoleCommand;
+	};
+	Weapons: {
+		DebugFiringVectors: ConsoleCommand;
+		DebugHitValidation: ConsoleCommand;
+		EnableHitValidation: ConsoleCommand;
+		LatencyCompensationDelayMethod: ConsoleCommand;
+		LatencyCompensationLimit: ConsoleCommand;
+		LatencyCompensationOffset: ConsoleCommand;
+		ProjectileClientLatencyCompensationEnabled: ConsoleCommand;
+		ProjectileLatencyCompensationEnabled: ConsoleCommand;
+		ProjectilePredictionEnabled: ConsoleCommand;
+	};
+	WireFuzzer: {
+		ClearBreakpoints: ConsoleCommand;
+		ComponentsPerTick: ConsoleCommand;
+		DisconnectBeforeConnect: ConsoleCommand;
+		GatesPerTick: ConsoleCommand;
+		MaxComponents: ConsoleCommand;
+		MaxGates: ConsoleCommand;
+		MaxWires: ConsoleCommand;
+		ModificationsPerTick: ConsoleCommand;
+		RerouteDuplication: ConsoleCommand;
+		Start: ConsoleCommand;
+		StartWithSeed: ConsoleCommand;
+		Stop: ConsoleCommand;
+		WiresPerTick: ConsoleCommand;
+	};
+	WireGraphViz: ConsoleCommand;
+	WireRenderer: {
+		EnablePorts: ConsoleCommand;
+		EnableWires: ConsoleCommand;
+	};
+	World: {
+		CreateEmpty: ConsoleCommand;
+		ListRevisions: ConsoleCommand;
+		Load: ConsoleCommand;
+		LoadAdditive: ConsoleCommand;
+		LoadRevision: ConsoleCommand;
+		Save: ConsoleCommand;
+		SaveAs: ConsoleCommand;
+	};
+	WorldSerializer: {
+		LogPrefabLoads: ConsoleCommand;
+		RedirectLegacyWheelJoints: ConsoleCommand;
+		WipeOwnershipOnLoad: ConsoleCommand;
+	};
+};
+/** Recursively turn a {@link CommandTree} into resolved command-name strings. */
+export type Resolved<T> = T extends ConsoleCommand ? string : {
+	[K in keyof T]: Resolved<T[K]>;
+};
+/**
+ * Version-resolved console command names, nested by namespace.
+ * Every leaf is the command string for the running game version.
+ */
+export type ConsoleCommands = Resolved<typeof COMMAND_TABLE>;
 export interface IOmeggaOptions {
 	noauth?: boolean;
 	noplugin?: boolean;
@@ -153,6 +462,26 @@ export type ILogMinigame = {
 	teams: {
 		name: string;
 		team: string;
+		color: number[];
+		members: OmeggaPlayer[];
+	}[];
+};
+/**
+ * The single gamemode that replaced minigames (~CL14000). Owns the teams and
+ * the players within them.
+ */
+export type IGamemode = {
+	/** the gamemode name (e.g. "Sandbox") */
+	name: string;
+	/** the BP_GameStateBase_C object id */
+	gamestate: string;
+	/** every player across all teams */
+	members: OmeggaPlayer[];
+	teams: {
+		name: string;
+		/** the BRGameModeTeam object id */
+		team: string;
+		/** [r, g, b, a] */
 		color: number[];
 		members: OmeggaPlayer[];
 	}[];
@@ -1243,7 +1572,9 @@ export declare const _OMEGGA_UTILS_IMPORT: {
 		sanitize: (str: string) => string;
 		parseLinks: (message: string) => string;
 		attr: (attr: string, param?: string) => ((message: string) => string);
-		attrParam: <T = string>(attr: string) => (message: string, param: T) => string;
+		attrParam: <T = string>(attr: string) => (message: string, param: T
+		/** player display name */
+		) => string;
 		color: (message: string, param: string) => string;
 		bold: (message: string) => string;
 		italic: (message: string) => string;
@@ -1703,12 +2034,22 @@ export interface StaticPlayer {
 export interface InjectedCommands {
 	/** Get server status */
 	getServerStatus(this: OmeggaLike): Promise<IServerStatus | null>;
-	/** Get a list of minigames and their indices */
+	/**
+	 * Get a list of minigames and their indices
+	 * @deprecated minigames were replaced by a single gamemode (~CL14000); on
+	 * modern servers this returns at most one entry with an empty `owner`.
+	 * Prefer {@link InjectedCommands.getGamemode}.
+	 */
 	listMinigames(this: OmeggaLike): Promise<IMinigameList>;
 	/** Get all player positions and pawns */
 	getAllPlayerPositions(this: OmeggaLike): Promise<IPlayerPositions>;
-	/** Get minigames and members */
+	/** Get minigames and members (one entry per gamemode on modern servers) */
 	getMinigames(this: OmeggaLike): Promise<ILogMinigame[]>;
+	/**
+	 * Get the single gamemode and its teams/players (modern servers, >=CL14000).
+	 * Returns null on older servers (use {@link InjectedCommands.getMinigames}).
+	 */
+	getGamemode(this: OmeggaLike): Promise<IGamemode | null>;
 }
 export interface MockEventEmitter {
 	addListener(event: string, listener: Function): this;
@@ -1753,6 +2094,12 @@ export interface OmeggaLike extends OmeggaCore, LogWrangling, InjectedCommands, 
 	writeln(line: string): void;
 	/** game CL version*/
 	version: number;
+	/**
+	 * version-resolved Brickadia console command names, nested by namespace.
+	 * e.g. `Omegga.Console.Bricks.Clear` resolves to the command string for the
+	 * running game version ("Bricks.Clear" or "br.Bricks.Clear")
+	 */
+	Console: ConsoleCommands;
 	/** verbose logging is enabled*/
 	verbose: boolean;
 	/** list of players */
